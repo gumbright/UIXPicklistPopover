@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UIXPicklistPopoverController.h"
 
 @interface ViewController : UIViewController
+
+@property (nonatomic, strong) UIXPicklistPopoverController* pop;
+
+- (IBAction) simplePicklistPressed:(id) sender;
 
 @end

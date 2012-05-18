@@ -20,6 +20,7 @@
 		E466F487156591BA00C358DA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E466F468156591B900C358DA /* Foundation.framework */; };
 		E466F48F156591BA00C358DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E466F48D156591BA00C358DA /* InfoPlist.strings */; };
 		E466F492156591BA00C358DA /* uixpopoverpickerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E466F491156591BA00C358DA /* uixpopoverpickerTests.m */; };
+		E466F49D1565939800C358DA /* UIXPicklistPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = E466F49C1565939800C358DA /* UIXPicklistPopoverController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,21 +38,23 @@
 		E466F466156591B900C358DA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E466F468156591B900C358DA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E466F46A156591B900C358DA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		E466F46E156591B900C358DA /* uixpopoverpicker-Info.plist */ = {isa = PBXFileReference; path = "uixpopoverpicker-Info.plist"; sourceTree = "<group>"; };
+		E466F46E156591B900C358DA /* uixpopoverpicker-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "uixpopoverpicker-Info.plist"; sourceTree = "<group>"; };
 		E466F470156591B900C358DA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E466F472156591B900C358DA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		E466F474156591B900C358DA /* uixpopoverpicker-Prefix.pch */ = {isa = PBXFileReference; path = "uixpopoverpicker-Prefix.pch"; sourceTree = "<group>"; };
-		E466F475156591B900C358DA /* AppDelegate.h */ = {isa = PBXFileReference; path = AppDelegate.h; sourceTree = "<group>"; };
+		E466F474156591B900C358DA /* uixpopoverpicker-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "uixpopoverpicker-Prefix.pch"; sourceTree = "<group>"; };
+		E466F475156591B900C358DA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E466F476156591B900C358DA /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		E466F478156591B900C358DA /* ViewController.h */ = {isa = PBXFileReference; path = ViewController.h; sourceTree = "<group>"; };
+		E466F478156591B900C358DA /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		E466F479156591B900C358DA /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		E466F47C156591BA00C358DA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
 		E466F483156591BA00C358DA /* uixpopoverpickerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = uixpopoverpickerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E466F484156591BA00C358DA /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		E466F48C156591BA00C358DA /* uixpopoverpickerTests-Info.plist */ = {isa = PBXFileReference; path = "uixpopoverpickerTests-Info.plist"; sourceTree = "<group>"; };
+		E466F48C156591BA00C358DA /* uixpopoverpickerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "uixpopoverpickerTests-Info.plist"; sourceTree = "<group>"; };
 		E466F48E156591BA00C358DA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		E466F490156591BA00C358DA /* uixpopoverpickerTests.h */ = {isa = PBXFileReference; path = uixpopoverpickerTests.h; sourceTree = "<group>"; };
+		E466F490156591BA00C358DA /* uixpopoverpickerTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = uixpopoverpickerTests.h; sourceTree = "<group>"; };
 		E466F491156591BA00C358DA /* uixpopoverpickerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = uixpopoverpickerTests.m; sourceTree = "<group>"; };
+		E466F49B1565939800C358DA /* UIXPicklistPopoverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIXPicklistPopoverController.h; sourceTree = "<group>"; };
+		E466F49C1565939800C358DA /* UIXPicklistPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIXPicklistPopoverController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +120,8 @@
 				E466F479156591B900C358DA /* ViewController.m */,
 				E466F47B156591BA00C358DA /* ViewController.xib */,
 				E466F46D156591B900C358DA /* Supporting Files */,
+				E466F49B1565939800C358DA /* UIXPicklistPopoverController.h */,
+				E466F49C1565939800C358DA /* UIXPicklistPopoverController.m */,
 			);
 			path = uixpopoverpicker;
 			sourceTree = "<group>";
@@ -261,6 +266,7 @@
 				E466F473156591B900C358DA /* main.m in Sources */,
 				E466F477156591B900C358DA /* AppDelegate.m in Sources */,
 				E466F47A156591B900C358DA /* ViewController.m in Sources */,
+				E466F49D1565939800C358DA /* UIXPicklistPopoverController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,6 +364,7 @@
 		E466F496156591BA00C358DA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "uixpopoverpicker/uixpopoverpicker-Prefix.pch";
 				INFOPLIST_FILE = "uixpopoverpicker/uixpopoverpicker-Info.plist";
@@ -369,6 +376,7 @@
 		E466F497156591BA00C358DA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "uixpopoverpicker/uixpopoverpicker-Prefix.pch";
 				INFOPLIST_FILE = "uixpopoverpicker/uixpopoverpicker-Info.plist";
