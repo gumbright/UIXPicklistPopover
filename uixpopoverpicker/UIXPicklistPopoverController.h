@@ -19,6 +19,11 @@
                  atIndex:(NSInteger) selectedIndex;
 
 - (void) picklistPopoverDismissed:(UIXPicklistPopoverController *)picklistPopoverController;
+
+@optional
+- (void) picklistPopover:(UIXPicklistPopoverController *)picklistPopoverController 
+       multiSelectValues: (NSArray*) selectedValues
+         selectedIndexes:(NSArray*) selectedIndexes;
 @end
 
 //////////////////////////////////////////////////////////////////
@@ -31,10 +36,19 @@
 @property (nonatomic, strong) UIXPicklistPopoverTableController* tableViewController;
 @property (nonatomic, assign) NSObject<UIXPicklistPopoverControllerDelegate>* picklistPopeverDelegate;
 @property (nonatomic, copy) NSArray* strings;
+@property (nonatomic, assign) BOOL multiSelect;
 
 //set width
 //max rows displayed
 
 + (UIXPicklistPopoverController*) picklistPopoverWithStrings:(NSArray*) array;
+
+- (void)presentPopoverFromRect:(CGRect)rect 
+                        inView:(UIView *)view 
+      permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections 
+                      animated:(BOOL)animated;
+- (void)presentPopoverFromBarButtonItem:(UIBarButtonItem *)item 
+               permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections 
+                               animated:(BOOL)animated;
 
 @end

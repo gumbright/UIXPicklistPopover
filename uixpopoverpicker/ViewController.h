@@ -9,10 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "UIXPicklistPopoverController.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <UIXPicklistPopoverControllerDelegate>
 
 @property (nonatomic, strong) UIXPicklistPopoverController* pop;
 
 - (IBAction) simplePicklistPressed:(id) sender;
+- (IBAction) multiselectPicklistPressed:(id) sender;
 
 @end

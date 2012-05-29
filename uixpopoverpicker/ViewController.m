@@ -37,6 +37,7 @@
 {
     NSArray* arr = [NSArray arrayWithObjects:@"Alpha",@"Beta",@"Gamma",@"Omega", nil];
     self.pop = [UIXPicklistPopoverController picklistPopoverWithStrings:arr];
+    self.pop.picklistPopeverDelegate = self;
     
     [self.pop presentPopoverFromRect:sender.frame 
                               inView:self.view 
@@ -44,17 +45,39 @@
                             animated:YES];
 }
 
+
+- (IBAction) multiselectPicklistPressed:(UIButton*) sender
+{
+    NSArray* arr = [NSArray arrayWithObjects:@"Alpha",@"Beta",@"Gamma",@"Omega", nil];
+    self.pop = [UIXPicklistPopoverController picklistPopoverWithStrings:arr];
+    self.pop.multiSelect = YES;
+    self.pop.picklistPopeverDelegate = self;
+    
+    [self.pop presentPopoverFromRect:sender.frame 
+                              inView:self.view 
+            permittedArrowDirections:UIPopoverArrowDirectionAny 
+                            animated:YES];
+}
+
+
 - (void) picklistPopover:(UIXPicklistPopoverController*) picklistPopoverController
            selectedValue:(NSString*) selectedValue 
                  atIndex:(NSInteger) selectedIndex
 {
-    self.pop = nil;
-    
+    [picklistPopoverController dismissPopoverAnimated:YES];
+//    self.pop = nil;
 }
 
 - (void) picklistPopoverDismissed:(UIXPicklistPopoverController *)picklistPopoverController
 {
     self.pop = nil;
+}
+
+- (void) picklistPopover:(UIXPicklistPopoverController *)picklistPopoverController 
+       multiSelectValues: (NSArray*) selectedValues
+         selectedIndexes:(NSArray*) selectedIndexes
+{
+    NSLog(@"%@",selectedValues);
 }
 
 @end
