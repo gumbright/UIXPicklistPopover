@@ -51,4 +51,6 @@
                permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections 
                                animated:(BOOL)animated;
 
+- (void) setSelectedLabel:(NSString*) selectedLabel;
+
 @end

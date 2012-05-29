@@ -12,6 +12,7 @@
 @interface ViewController : UIViewController <UIXPicklistPopoverControllerDelegate>
 
 @property (nonatomic, strong) UIXPicklistPopoverController* pop;
+@property (nonatomic, assign) IBOutlet UILabel* lastSingleSelected;
 
 - (IBAction) simplePicklistPressed:(id) sender;
 - (IBAction) multiselectPicklistPressed:(id) sender;

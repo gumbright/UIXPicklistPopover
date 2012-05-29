@@ -11,7 +11,7 @@
 @class UIXPicklistPopoverController;
 
 @interface UIXPicklistPopoverController ()
-@property (nonatomic, strong) NSMutableSet* selectedValues;
+@property (nonatomic, strong) NSMutableSet* selectedLabels;
 @end
 
 @interface UIXPicklistPopoverTableController : UITableViewController
@@ -27,7 +27,7 @@
 @synthesize strings=_strings;
 @synthesize picklistPopeverDelegate=_picklistPopeverDelegate;
 @synthesize multiSelect=_multiSelect;
-@synthesize selectedValues=_selectedValues;
+@synthesize selectedLabels=_selectedLabels;
 
 //////////////////////////////////////////////////////////
 //
@@ -60,7 +60,7 @@
     if (self = [super initWithContentViewController:viewController])
     {
         self.multiSelect = NO;
-        self.selectedValues = [NSMutableSet set];
+        self.selectedLabels = [NSMutableSet set];
     }
     
     return self;
@@ -99,7 +99,7 @@
     
  	cell.textLabel.text = [self.strings objectAtIndex:[indexPath row]];
     
-    if ([self.selectedValues containsObject:[self.strings objectAtIndex:[indexPath row]]])
+    if ([self.selectedLabels containsObject:[self.strings objectAtIndex:[indexPath row]]])
     {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     }
@@ -139,23 +139,31 @@
     {
         //toggle the checkmark
         NSString* value = [self.strings objectAtIndex:[indexPath row]];
-        BOOL selected = [self.selectedValues containsObject:value];
+        BOOL selected = [self.selectedLabels containsObject:value];
         
         UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
         if (!selected)
         {
-            [self.selectedValues addObject:value];
+            [self.selectedLabels addObject:value];
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
         }
         else 
         {
-            [self.selectedValues removeObject:value];
+            [self.selectedLabels removeObject:value];
             cell.accessoryType = UITableViewCellAccessoryNone;
         }
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
     else 
     {
+        if (self.selectedLabels.count > 0)
+        {
+            NSInteger ndx = [self.strings indexOfObject:[self.selectedLabels anyObject]];
+            NSIndexPath* path = [NSIndexPath indexPathForRow:ndx inSection:0];
+            [tableView cellForRowAtIndexPath:path].accessoryType = UITableViewCellAccessoryNone;
+        }
+        
+        [tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryCheckmark;
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         
         [self.picklistPopeverDelegate picklistPopover:self
@@ -215,7 +223,7 @@
 */
 - (void) multiselectDone
 {
-    NSArray* values = [[self.selectedValues allObjects] sortedArrayUsingSelector:@selector(localizedCompare:)];
+    NSArray* values = [[self.selectedLabels allObjects] sortedArrayUsingSelector:@selector(localizedCompare:)];
     NSMutableArray* indexes = [NSMutableArray array];
     
     for (NSString* s in values)
@@ -229,6 +237,18 @@
                                   selectedIndexes:indexes];
 }
 
+///////////////////////////////////////////
+//
+///////////////////////////////////////////
+- (void) setSelectedLabel:(NSString*) selectedLabel
+{
+    if (!self.multiSelect)
+    {
+        [self.selectedLabels removeAllObjects];
+    }
+    
+    [self.selectedLabels addObject:selectedLabel];
+}
 @end
 
 //////////////////////////////////////////////////////////////////////////////

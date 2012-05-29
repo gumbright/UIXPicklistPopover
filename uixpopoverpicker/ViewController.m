@@ -15,6 +15,7 @@
 @implementation ViewController
 
 @synthesize pop;
+@synthesize  lastSingleSelected;
 
 - (void)viewDidLoad
 {
@@ -38,6 +39,7 @@
     NSArray* arr = [NSArray arrayWithObjects:@"Alpha",@"Beta",@"Gamma",@"Omega", nil];
     self.pop = [UIXPicklistPopoverController picklistPopoverWithStrings:arr];
     self.pop.picklistPopeverDelegate = self;
+    [self.pop setSelectedLabel:self.lastSingleSelected.text];
     
     [self.pop presentPopoverFromRect:sender.frame 
                               inView:self.view 
@@ -55,6 +57,12 @@
     self.pop = [UIXPicklistPopoverController picklistPopoverWithStrings:arr];
     self.pop.multiSelect = YES;
     self.pop.picklistPopeverDelegate = self;
+    [self.pop setSelectedLabel:@"GoldenTablets"];
+    [self.pop setSelectedLabel:@"iOS"];
+    [self.pop setSelectedLabel:@"Otter"];
+    [self.pop setSelectedLabel:@"Godzilla"];
+    [self.pop setSelectedLabel:@"Bibo"];
+    [self.pop setSelectedLabel:@"Android"];
     
     [self.pop presentPopoverFromRect:sender.frame 
                               inView:self.view 
@@ -67,8 +75,9 @@
            selectedValue:(NSString*) selectedValue 
                  atIndex:(NSInteger) selectedIndex
 {
+    self.lastSingleSelected.text = selectedValue;
+    
     [picklistPopoverController dismissPopoverAnimated:YES];
-//    self.pop = nil;
 }
 
 - (void) picklistPopoverDismissed:(UIXPicklistPopoverController *)picklistPopoverController
