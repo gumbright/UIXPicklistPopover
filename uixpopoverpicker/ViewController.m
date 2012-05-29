@@ -48,7 +48,10 @@
 
 - (IBAction) multiselectPicklistPressed:(UIButton*) sender
 {
-    NSArray* arr = [NSArray arrayWithObjects:@"Alpha",@"Beta",@"Gamma",@"Omega", nil];
+    NSArray* arr = [NSArray arrayWithObjects:@"Alpha",@"Beta",@"Gamma",@"Omega",@"Toaster",@"Poptart",@"Watermelon",@"Fruit bat",@"Breakfast Cereal",
+                    @"Llamas",@"Very small rocks",@"GoldenTablets",@"Chicken wire",@"Duck Table",@"Pigeon Cable",
+                    @"Loose women",@"Evangelicals",@"PC",@"Mac",@"iOS",@"Android",@"Weasel",@"Squirrel",@"Chipmumk",@"Otter",@"Ferret",@"House cat",@"Bibo",@"Lucky Boy",
+                    @"Batz Maru",@"Godzilla",@"Rodan",@"Ghidra",@"Ren",@"Stimpy",nil];
     self.pop = [UIXPicklistPopoverController picklistPopoverWithStrings:arr];
     self.pop.multiSelect = YES;
     self.pop.picklistPopeverDelegate = self;

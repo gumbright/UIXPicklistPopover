@@ -10,12 +10,15 @@
 
 @class UIXPicklistPopoverController;
 
+@interface UIXPicklistPopoverController ()
+@property (nonatomic, strong) NSMutableSet* selectedValues;
+@end
+
 @interface UIXPicklistPopoverTableController : UITableViewController
 
 @property (nonatomic, assign) NSInteger numEntries;
 @property (nonatomic, assign) UIXPicklistPopoverController* myPopoverController;
 
-- (void) multiselectDone;
 @end
 
 @implementation UIXPicklistPopoverController
@@ -24,6 +27,7 @@
 @synthesize strings=_strings;
 @synthesize picklistPopeverDelegate=_picklistPopeverDelegate;
 @synthesize multiSelect=_multiSelect;
+@synthesize selectedValues=_selectedValues;
 
 //////////////////////////////////////////////////////////
 //
@@ -56,6 +60,7 @@
     if (self = [super initWithContentViewController:viewController])
     {
         self.multiSelect = NO;
+        self.selectedValues = [NSMutableSet set];
     }
     
     return self;
@@ -94,6 +99,15 @@
     
  	cell.textLabel.text = [self.strings objectAtIndex:[indexPath row]];
     
+    if ([self.selectedValues containsObject:[self.strings objectAtIndex:[indexPath row]]])
+    {
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    }
+    else 
+    {
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
+    
     return cell;
 }
 /*
@@ -124,13 +138,18 @@
     if (self.multiSelect)
     {
         //toggle the checkmark
+        NSString* value = [self.strings objectAtIndex:[indexPath row]];
+        BOOL selected = [self.selectedValues containsObject:value];
+        
         UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
-        if (cell.accessoryType != UITableViewCellAccessoryCheckmark)
+        if (!selected)
         {
+            [self.selectedValues addObject:value];
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
         }
         else 
         {
+            [self.selectedValues removeObject:value];
             cell.accessoryType = UITableViewCellAccessoryNone;
         }
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -196,23 +215,15 @@
 */
 - (void) multiselectDone
 {
-    NSMutableArray *values, *indexes;
+    NSArray* values = [[self.selectedValues allObjects] sortedArrayUsingSelector:@selector(localizedCompare:)];
+    NSMutableArray* indexes = [NSMutableArray array];
     
-    values = [NSMutableArray array];
-    indexes = [NSMutableArray array];
-    
-    for (NSUInteger ndx=0; ndx < self.tableViewController.numEntries; ++ndx)
+    for (NSString* s in values)
     {
-        NSIndexPath* path = [NSIndexPath indexPathForRow:ndx inSection:0];
-        UITableViewCell* cell = [self.tableViewController.tableView cellForRowAtIndexPath:path];
-        
-        if (cell.accessoryType == UITableViewCellAccessoryCheckmark)
-        {
-            [values addObject:[self.strings objectAtIndex:[path row]]];
-            [indexes addObject:[NSNumber numberWithInteger:ndx]];
-        }
+        NSInteger ndx = [self.strings indexOfObject:s];
+        [indexes addObject:[NSNumber numberWithInteger:ndx]];
     }
-    
+
     [self.picklistPopeverDelegate picklistPopover:self 
                                 multiSelectValues: values
                                   selectedIndexes:indexes];
