@@ -10,106 +10,71 @@
 
 @class UIXPicklistPopoverController;
 
-@interface UIXPicklistPopoverController ()
-@property (nonatomic, strong) NSMutableSet* selectedLabels;
+
+@protocol UIXPicklistPopoverTableControllerDelegate
+
+- (void) itemsSelected:(NSArray*) selectedValues
+              atIndexes:(NSArray*) selectedIndexes;
+
+@end
+
+@interface UIXPicklistPopoverController () <UIXPicklistPopoverTableControllerDelegate>
 @end
 
 @interface UIXPicklistPopoverTableController : UITableViewController
 
 @property (nonatomic, assign) NSInteger numEntries;
-@property (nonatomic, assign) UIXPicklistPopoverController* myPopoverController;
-
+@property (nonatomic, unsafe_unretained) UIXPicklistPopoverController* myPopoverController;
+@property (nonatomic, assign) CGFloat contentWidth;
+@property (nonatomic, copy) NSArray* stringArray;
+@property (nonatomic, strong) NSMutableSet* selectedLabels;
+@property (nonatomic, assign) BOOL multiSelect;
+@property (nonatomic, unsafe_unretained) NSObject<UIXPicklistPopoverTableControllerDelegate>* privateDelegate;
+@property (nonatomic, copy) NSArray* selectedValues;
 @end
+
 
 @implementation UIXPicklistPopoverController
 
 @synthesize tableViewController=_tableViewController;
-@synthesize strings=_strings;
 @synthesize picklistPopeverDelegate=_picklistPopeverDelegate;
 @synthesize multiSelect=_multiSelect;
-@synthesize selectedLabels=_selectedLabels;
+@synthesize contentWidth=_contentWidth;
 
 //////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////
-+ (UIXPicklistPopoverController*) picklistPopoverWithStrings:(NSArray*) array
-{
-    UIXPicklistPopoverTableController* tvc = [[UIXPicklistPopoverTableController alloc] initWithStyle:UITableViewStylePlain];
-    
-    //Honestly I consider this a horrible hack, but as the popover is such a pain and the idea is this to be static
-    //I can cope.
-    tvc.numEntries = array.count;
-
-    UINavigationController* nc = [[UINavigationController alloc] initWithRootViewController:tvc];
-    UIXPicklistPopoverController* popController = [[UIXPicklistPopoverController alloc] initWithContentViewController:nc];
-    
-    tvc.tableView.dataSource = popController;
-    tvc.tableView.delegate = popController;
-    tvc.myPopoverController = popController;
-
-    popController.tableViewController = tvc;
-    
-    popController.strings = array;
-    popController.delegate = popController;
-
-    return popController;
+- (void)setTitleText:(NSString *)titleText {
+    [[[[[self tableViewController] navigationController] navigationBar] topItem]setTitle:titleText];
 }
 
-- (id)initWithContentViewController:(UIViewController *)viewController
+//////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////
+- (id) initWithStrings:(NSArray*) stringArray multiSelect:(BOOL) isMultiSelect selectedValues:(NSArray*) selectedValues
 {
-    if (self = [super initWithContentViewController:viewController])
+    UIXPicklistPopoverTableController* tvc = [[UIXPicklistPopoverTableController alloc] initWithStyle:UITableViewStylePlain];
+    UINavigationController* nc = [[UINavigationController alloc] initWithRootViewController:tvc];
+    tvc.stringArray = stringArray;
+    tvc.multiSelect = isMultiSelect;
+    tvc.selectedValues = selectedValues;
+    
+    if (self = [super initWithContentViewController:nc])
     {
-        self.multiSelect = NO;
-        self.selectedLabels = [NSMutableSet set];
+        tvc.privateDelegate = self;
+        self.multiSelect = isMultiSelect;
+        self.contentWidth = 320;
+        self.strings = stringArray;
+        self.tableViewController = tvc;
+        
+        tvc.myPopoverController = self;
+
+        tvc.contentWidth = self.contentWidth;
     }
     
     return self;
 }
 
-///////////////////////////////////////////
-//
-///////////////////////////////////////////
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView 
-{
-    return 1;
-}
-
-
-///////////////////////////////////////////
-//
-///////////////////////////////////////////
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section 
-{
-    return self.strings.count;
-}
-
-
-///////////////////////////////////////////
-//
-///////////////////////////////////////////
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
-{
-	UITableViewCell *cell = nil;
-	
-    cell = [tableView dequeueReusableCellWithIdentifier:@"SimplePicklist"];
-    if (cell == nil) 
-    {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"SimplePicklist"];
-    }
-    
- 	cell.textLabel.text = [self.strings objectAtIndex:[indexPath row]];
-    
-    if ([self.selectedLabels containsObject:[self.strings objectAtIndex:[indexPath row]]])
-    {
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
-    }
-    else 
-    {
-        cell.accessoryType = UITableViewCellAccessoryNone;
-    }
-    
-    return cell;
-}
 /*
 ///////////////////////////////////////////
 //
@@ -130,49 +95,6 @@
 }
 */
 
-///////////////////////////////////////////
-//
-///////////////////////////////////////////
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
-{
-    if (self.multiSelect)
-    {
-        //toggle the checkmark
-        NSString* value = [self.strings objectAtIndex:[indexPath row]];
-        BOOL selected = [self.selectedLabels containsObject:value];
-        
-        UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
-        if (!selected)
-        {
-            [self.selectedLabels addObject:value];
-            cell.accessoryType = UITableViewCellAccessoryCheckmark;
-        }
-        else 
-        {
-            [self.selectedLabels removeObject:value];
-            cell.accessoryType = UITableViewCellAccessoryNone;
-        }
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    }
-    else 
-    {
-        if (self.selectedLabels.count > 0)
-        {
-            NSInteger ndx = [self.strings indexOfObject:[self.selectedLabels anyObject]];
-            NSIndexPath* path = [NSIndexPath indexPathForRow:ndx inSection:0];
-            [tableView cellForRowAtIndexPath:path].accessoryType = UITableViewCellAccessoryNone;
-        }
-        
-        [tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryCheckmark;
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        
-        [self.picklistPopeverDelegate picklistPopover:self
-                                        selectedValue:[self.strings objectAtIndex:[indexPath row]] 
-                                              atIndex:[indexPath row]];
-        
-        [self dismissPopoverAnimated:YES];
-    }
-}
 
 ///////////////////////////////////////////
 //
@@ -187,6 +109,7 @@
 ///////////////////////////////////////////
 - (void) configurePopover
 {
+    self.tableViewController.contentWidth = self.contentWidth;
 }
 
 
@@ -213,17 +136,12 @@
     [super presentPopoverFromBarButtonItem:item permittedArrowDirections:arrowDirections animated:animated];
 }
 
-/*
 ///////////////////////////////////////////
 //
 ///////////////////////////////////////////
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-}
-*/
 - (void) multiselectDone
 {
-    NSArray* values = [[self.selectedLabels allObjects] sortedArrayUsingSelector:@selector(localizedCompare:)];
+    NSArray* values = [[self.tableViewController.selectedLabels allObjects] sortedArrayUsingSelector:@selector(localizedCompare:)];
     NSMutableArray* indexes = [NSMutableArray array];
     
     for (NSString* s in values)
@@ -233,21 +151,20 @@
     }
 
     [self.picklistPopeverDelegate picklistPopover:self 
-                                multiSelectValues: values
+                                   selectedValues: values
                                   selectedIndexes:indexes];
 }
 
 ///////////////////////////////////////////
 //
 ///////////////////////////////////////////
-- (void) setSelectedLabel:(NSString*) selectedLabel
+- (void) itemsSelected:(NSArray*) selectedValues
+             atIndexes:(NSArray*) selectedIndexes;
 {
-    if (!self.multiSelect)
-    {
-        [self.selectedLabels removeAllObjects];
-    }
+    [self.picklistPopeverDelegate picklistPopover:self
+                                    selectedValues:selectedValues
+                                          selectedIndexes:selectedIndexes];
     
-    [self.selectedLabels addObject:selectedLabel];
 }
 @end
 
@@ -258,15 +175,53 @@
 
 @synthesize numEntries=_numEntries;
 @synthesize myPopoverController=_myPopoverController;
+@synthesize contentWidth=_contentWidth;
+@synthesize selectedLabels=_selectedLabels;
+@synthesize privateDelegate=_privateDelegate;
 
+///////////////////////////////////////////
+//
+///////////////////////////////////////////
+- (id) initWithStyle:(UITableViewStyle)style
+{
+    if (self = [super initWithStyle:style])
+    {
+        self.selectedLabels = [NSMutableSet set];
+        self.contentWidth = 320;
+    }
+    
+    return self;
+}
 
 ///////////////////////////////////////////
 //
 ///////////////////////////////////////////
 - (void) viewDidLoad
 {
-    CGSize sz = CGSizeMake(320,self.numEntries * self.tableView.rowHeight);
+    CGSize sz = CGSizeMake(self.contentWidth,[self.tableView.dataSource tableView:self.tableView numberOfRowsInSection:0] * self.tableView.rowHeight);
     self.contentSizeForViewInPopover = sz;
+    
+    if (self.selectedValues && self.selectedValues.count)
+    {
+        if (self.multiSelect)
+        {
+            for (NSString* s in self.selectedValues)
+            {
+                if ([self.stringArray containsObject:s])
+                {
+                    [self.selectedLabels addObject:s];
+                }
+            }
+        }
+        else
+        {
+            NSString* s = [self.selectedValues objectAtIndex:0];
+            if ([self.stringArray containsObject:s])
+            {
+                [self.selectedLabels addObject:s];
+            }
+        }
+    }
 }
 
 ///////////////////////////////////////////
@@ -274,16 +229,20 @@
 ///////////////////////////////////////////
 - (void) viewWillAppear:(BOOL)animated
 {
+    CGSize sz = CGSizeMake(self.contentWidth,self.numEntries * self.tableView.rowHeight);
+    self.contentSizeForViewInPopover = sz;
+    
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                            target: self 
                                                                                            action:@selector(cancelPressed:)];
     
-    if (self.myPopoverController.multiSelect == YES)
+    if (self.multiSelect == YES)
     {
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                                                target: self 
                                                                                                action:@selector(donePressed:)];
     }
+    [self.tableView reloadData];
 }
 
 ///////////////////////////////////////////
@@ -302,4 +261,110 @@
     [self.myPopoverController multiselectDone];
     [self.myPopoverController dismissPopoverAnimated:YES];
 }
+
+///////////////////////////////////////////
+//
+///////////////////////////////////////////
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+
+///////////////////////////////////////////
+//
+///////////////////////////////////////////
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return self.stringArray.count;
+}
+
+
+///////////////////////////////////////////
+//
+///////////////////////////////////////////
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	UITableViewCell *cell = nil;
+	
+    cell = [tableView dequeueReusableCellWithIdentifier:@"SimplePicklist"];
+    if (cell == nil)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"SimplePicklist"];
+    }
+    
+ 	cell.textLabel.text = [self.stringArray objectAtIndex:[indexPath row]];
+    
+    if ([self.selectedLabels containsObject:[self.stringArray objectAtIndex:[indexPath row]]])
+    {
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    }
+    else
+    {
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
+    
+    return cell;
+}
+
+///////////////////////////////////////////
+//
+///////////////////////////////////////////
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.multiSelect)
+    {
+        //toggle the checkmark
+        NSString* value = [self.stringArray objectAtIndex:[indexPath row]];
+        BOOL selected = [self.selectedLabels containsObject:value];
+        
+        UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
+        if (!selected)
+        {
+            [self.selectedLabels addObject:value];
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        }
+        else
+        {
+            [self.selectedLabels removeObject:value];
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        }
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    }
+    else
+    {
+        if (self.selectedLabels.count > 0)
+        {
+            NSInteger ndx = [self.stringArray indexOfObject:[self.selectedLabels anyObject]];
+            NSIndexPath* path = [NSIndexPath indexPathForRow:ndx inSection:0];
+            [tableView cellForRowAtIndexPath:path].accessoryType = UITableViewCellAccessoryNone;
+        }
+        
+        [tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryCheckmark;
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        /*
+         * Update selected label.
+         */
+        [self setSelectedLabel:[self.stringArray objectAtIndex:[indexPath row]]];
+        
+        [self.privateDelegate itemsSelected:@[[self.stringArray objectAtIndex:[indexPath row]]]
+                                   atIndexes:@[[NSNumber numberWithInteger:[indexPath row]]]];
+        [self.myPopoverController dismissPopoverAnimated:YES];
+    }
+}
+
+///////////////////////////////////////////
+//
+///////////////////////////////////////////
+- (void) setSelectedLabel:(NSString*) selectedLabel
+{
+    if (!self.multiSelect)
+    {
+        [self.selectedLabels removeAllObjects];
+    }
+    if (selectedLabel) {
+        [self.selectedLabels addObject:selectedLabel];
+    }
+}
+
 @end  

@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) UIXPicklistPopoverController* pop;
 @property (nonatomic, assign) IBOutlet UILabel* lastSingleSelected;
+@property (nonatomic, assign) IBOutlet UILabel* lastMultipleSelected;
 
 - (IBAction) simplePicklistPressed:(id) sender;
 - (IBAction) multiselectPicklistPressed:(id) sender;

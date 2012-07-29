@@ -11,18 +11,17 @@
 @class UIXPicklistPopoverController;
 @class UIXPicklistPopoverTableController;
 
-@protocol UIXPicklistPopoverControllerDelegate
+@protocol UIXPicklistPopoverControllerDelegate <NSObject>
 
 @required
-- (void) picklistPopover:(UIXPicklistPopoverController*) picklistPopoverController
-           selectedValue:(NSString*) selectedValue 
-                 atIndex:(NSInteger) selectedIndex;
+//- (void) picklistPopover:(UIXPicklistPopoverController*) picklistPopoverController
+//           selectedValue:(NSString*) selectedValue 
+//                 atIndex:(NSInteger) selectedIndex;
 
 - (void) picklistPopoverDismissed:(UIXPicklistPopoverController *)picklistPopoverController;
 
-@optional
-- (void) picklistPopover:(UIXPicklistPopoverController *)picklistPopoverController 
-       multiSelectValues: (NSArray*) selectedValues
+- (void) picklistPopover:(UIXPicklistPopoverController *)picklistPopoverController
+          selectedValues: (NSArray*) selectedValues
          selectedIndexes:(NSArray*) selectedIndexes;
 @end
 
@@ -37,20 +36,23 @@
 @property (nonatomic, assign) NSObject<UIXPicklistPopoverControllerDelegate>* picklistPopeverDelegate;
 @property (nonatomic, copy) NSArray* strings;
 @property (nonatomic, assign) BOOL multiSelect;
+@property (nonatomic, assign) CGFloat contentWidth;
 
-//set width
-//max rows displayed
-
-+ (UIXPicklistPopoverController*) picklistPopoverWithStrings:(NSArray*) array;
+- (id) initWithStrings:(NSArray*) stringArray
+           multiSelect:(BOOL) isMultiSelect
+        selectedValues:(NSArray*) selectedValues;
 
 - (void)presentPopoverFromRect:(CGRect)rect 
                         inView:(UIView *)view 
       permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections 
                       animated:(BOOL)animated;
+
 - (void)presentPopoverFromBarButtonItem:(UIBarButtonItem *)item 
                permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections 
                                animated:(BOOL)animated;
-
-- (void) setSelectedLabel:(NSString*) selectedLabel;
+/*
+ * set title on navigation bar.
+ */
+- (void)setTitleText:(NSString *)titleText;
 
 @end
