@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E44904AB1603D12B00E9B72D /* UIXPicklistPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = E44904AA1603D12B00E9B72D /* UIXPicklistPopoverController.m */; };
 		E466F467156591B900C358DA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E466F466156591B900C358DA /* UIKit.framework */; };
 		E466F469156591B900C358DA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E466F468156591B900C358DA /* Foundation.framework */; };
 		E466F46B156591B900C358DA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E466F46A156591B900C358DA /* CoreGraphics.framework */; };
@@ -20,7 +21,6 @@
 		E466F487156591BA00C358DA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E466F468156591B900C358DA /* Foundation.framework */; };
 		E466F48F156591BA00C358DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E466F48D156591BA00C358DA /* InfoPlist.strings */; };
 		E466F492156591BA00C358DA /* uixpopoverpickerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E466F491156591BA00C358DA /* uixpopoverpickerTests.m */; };
-		E4E9CEDE15C4F45F00A43E02 /* UIXPicklistPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E9CEDD15C4F45F00A43E02 /* UIXPicklistPopoverController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +34,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E44904A91603D12B00E9B72D /* UIXPicklistPopoverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIXPicklistPopoverController.h; sourceTree = "<group>"; };
+		E44904AA1603D12B00E9B72D /* UIXPicklistPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIXPicklistPopoverController.m; sourceTree = "<group>"; };
 		E466F462156591B900C358DA /* uixpopoverpicker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = uixpopoverpicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E466F466156591B900C358DA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E466F468156591B900C358DA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -53,8 +55,6 @@
 		E466F48E156591BA00C358DA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E466F490156591BA00C358DA /* uixpopoverpickerTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = uixpopoverpickerTests.h; sourceTree = "<group>"; };
 		E466F491156591BA00C358DA /* uixpopoverpickerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = uixpopoverpickerTests.m; sourceTree = "<group>"; };
-		E4E9CEDC15C4F45F00A43E02 /* UIXPicklistPopoverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIXPicklistPopoverController.h; sourceTree = "<group>"; };
-		E4E9CEDD15C4F45F00A43E02 /* UIXPicklistPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIXPicklistPopoverController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +81,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E44904A81603D12B00E9B72D /* UIXPicklistPopoverController */ = {
+			isa = PBXGroup;
+			children = (
+				E44904A91603D12B00E9B72D /* UIXPicklistPopoverController.h */,
+				E44904AA1603D12B00E9B72D /* UIXPicklistPopoverController.m */,
+			);
+			path = UIXPicklistPopoverController;
+			sourceTree = SOURCE_ROOT;
+		};
 		E466F457156591B900C358DA = {
 			isa = PBXGroup;
 			children = (
@@ -114,7 +123,7 @@
 		E466F46C156591B900C358DA /* uixpopoverpicker */ = {
 			isa = PBXGroup;
 			children = (
-				E4E9CEDB15C4F45F00A43E02 /* UIXPicklistPopoverController */,
+				E44904A81603D12B00E9B72D /* UIXPicklistPopoverController */,
 				E466F475156591B900C358DA /* AppDelegate.h */,
 				E466F476156591B900C358DA /* AppDelegate.m */,
 				E466F478156591B900C358DA /* ViewController.h */,
@@ -153,15 +162,6 @@
 				E466F48D156591BA00C358DA /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		E4E9CEDB15C4F45F00A43E02 /* UIXPicklistPopoverController */ = {
-			isa = PBXGroup;
-			children = (
-				E4E9CEDC15C4F45F00A43E02 /* UIXPicklistPopoverController.h */,
-				E4E9CEDD15C4F45F00A43E02 /* UIXPicklistPopoverController.m */,
-			);
-			path = UIXPicklistPopoverController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -274,7 +274,7 @@
 				E466F473156591B900C358DA /* main.m in Sources */,
 				E466F477156591B900C358DA /* AppDelegate.m in Sources */,
 				E466F47A156591B900C358DA /* ViewController.m in Sources */,
-				E4E9CEDE15C4F45F00A43E02 /* UIXPicklistPopoverController.m in Sources */,
+				E44904AB1603D12B00E9B72D /* UIXPicklistPopoverController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
