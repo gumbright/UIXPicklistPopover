@@ -37,10 +37,6 @@
 @protocol UIXPicklistPopoverControllerDelegate <NSObject>
 
 @required
-//- (void) picklistPopover:(UIXPicklistPopoverController*) picklistPopoverController
-//           selectedValue:(NSString*) selectedValue 
-//                 atIndex:(NSInteger) selectedIndex;
-
 - (void) picklistPopoverDismissed:(UIXPicklistPopoverController *)picklistPopoverController;
 
 - (void) picklistPopover:(UIXPicklistPopoverController *)picklistPopoverController

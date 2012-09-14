@@ -1,4 +1,27 @@
-.DS_Store
-build/
+# xcode noise
+build/*
 *.pbxuser
+*.mode2v3
 *.mode1v3
+*.perspective
+*.perspectivev3
+._*
+
+*.xcworkspace
+xcuserdata
+xcuserdata/
+**/xcuserdata
+
+*.xcodeproj/xcuserdata
+*.xcodeproj/xcuserdata/*.xcuserdatad
+*.xcodeproj/project.xcworkspace/xcuserdata/*.xcuserdatad
+
+# old skool
+.svn
+ 
+# osx noise
+.DS_Store
+profile
+ 
+*.swp
+*~.nib
