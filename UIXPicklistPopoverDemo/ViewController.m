@@ -48,7 +48,7 @@
 
 - (IBAction) fancyPantsPressed:(UIButton*)sender
 {
-    [UIXPicklistPopover picklistPopoverFromRect:sender.frame
+    self.picklist = [UIXPicklistPopover picklistPopoverFromRect:sender.frame
                                       inView:self.view
                                        items:self.values
                                selectedItems:nil
@@ -64,7 +64,7 @@
 
 - (IBAction) fancyPantsMultiPressed:(UIButton*)sender
 {
-    [UIXPicklistPopover picklistPopoverFromRect:sender.frame
+    self.picklist = [UIXPicklistPopover picklistPopoverFromRect:sender.frame
                                       inView:self.view
                                        items:self.values
                                   selectedItems:[NSArray arrayWithObjects:@"Chicken wire",@"Duck Table",@"Pigeon Cable", nil]
