@@ -507,6 +507,7 @@
     self.pop = [[UIPopoverController alloc] initWithContentViewController: tableController];
     self.pop.delegate = self;
     tableController.myPopoverController = self.pop;
+    tableController.picklistTableDelegate = self.pop;
     [self.pop presentPopoverFromRect:rect inView:view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 }
 

@@ -57,7 +57,7 @@
                                selectionType:UIXPicklistPopoverControllerSingleSelect
                           onSelectionChanged:^(NSArray* selectedItems, NSArray* selectedItemIndexes, NSDictionary* userInfo) {
                               
-                              //NSLog(@"%@ %@",selectedItems,selectedItemIndexes);
+                              NSLog(@"%@ %@",selectedItems,selectedItemIndexes);
                               
                           }];
 }
@@ -73,7 +73,7 @@
                                selectionType:UIXPicklistPopoverControllerMultipleSelect
                           onSelectionChanged:^(NSArray* selectedItems, NSArray* selectedItemIndexes, NSDictionary* userInfo) {
                               
-                              //NSLog(@"%@ %@",selectedItems,selectedItemIndexes);
+                              NSLog(@"%@ %@",selectedItems,selectedItemIndexes);
                               
                           }];
 }
