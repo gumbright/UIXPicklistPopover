@@ -42,6 +42,10 @@ static UIXPicklistPopoverResultBlock _selectionChangedBlock;
 @protocol PicklistPopoverTableViewControllerDelegate
 - (void) tableControllerCancelled;
 - (void) tableControllerDidSelectItem;
+
+//optional
+//- (BOOL) displayAddWhenNoMatch;
+//- (void) addItemSelected;
 @end
 
 #pragma mark UIXPicklistPopoverTableViewController Interface
@@ -49,6 +53,7 @@ static UIXPicklistPopoverResultBlock _selectionChangedBlock;
 
 @property (nonatomic, assign) BOOL search;
 @property (nonatomic, assign) BOOL toolbarButtons;
+@property (nonatomic, weak) NSDictionary* userInfo;
 @property (nonatomic, assign) UIXPicklistPopoverControllerSelectionType selectionType;
 
 @property (nonatomic, copy) NSArray* valuesArray;
@@ -136,19 +141,27 @@ static UIXPicklistPopoverResultBlock _selectionChangedBlock;
     self.view = v;
 }
 
-
+/////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
 }
 
+/////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
+/////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////
 - (void) cancelPressed:(id) sender
 {
     [self.picklistTableDelegate tableControllerCancelled];
@@ -260,22 +273,34 @@ static UIXPicklistPopoverResultBlock _selectionChangedBlock;
     }
 }
 
+/////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////
 - (void) setValuesArray:(NSArray *)values
 {
     _valuesArray = values;
     _filteredValues = _valuesArray;
 }
 
+/////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////
 - (void) setSelectedItems:(NSArray *)selectedItems
 {
     self.selectedValues = [NSMutableSet setWithArray:selectedItems];
 }
 
+/////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////
 - (NSArray*) getSelectedItems
 {
     return self.selectedValues.allObjects;
 }
 
+/////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////
 - (NSArray*) getSelectedItemIndexes
 {
     NSMutableArray* indexes = [NSMutableArray arrayWithCapacity:self.selectedValues.count];
@@ -297,6 +322,9 @@ static UIXPicklistPopoverResultBlock _selectionChangedBlock;
     //    }
 }
 
+/////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////
 - (void) searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
     //!!!this can be better optimized by looking at the length change, etc
@@ -308,11 +336,13 @@ static UIXPicklistPopoverResultBlock _selectionChangedBlock;
         }];
         
         self.filteredValues = [self.valuesArray objectsAtIndexes:indexes];
+        
     }
     else
     {
         self.filteredValues  = self.valuesArray;
     }
+
     [self.table reloadData];
 }
 @end
@@ -349,10 +379,13 @@ static UIXPicklistPopoverResultBlock _selectionChangedBlock;
     
     if (_selectionChangedBlock)
     {
-        _selectionChangedBlock(selected, selectedIndexes);
+        _selectionChangedBlock(selected, selectedIndexes, tableController.userInfo);
     }
 }
 
+/////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////
 - (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController
 {
     UIXPicklistPopoverTableViewController* tableController = (UIXPicklistPopoverTableViewController*) popoverController.contentViewController;
@@ -360,7 +393,7 @@ static UIXPicklistPopoverResultBlock _selectionChangedBlock;
     NSArray* selectedIndexes = [tableController getSelectedItemIndexes];
     
     if (_selectionChangedBlock) {
-        _selectionChangedBlock(selected, selectedIndexes);
+        _selectionChangedBlock(selected, selectedIndexes, tableController.userInfo);
     }
     
     return YES;
@@ -371,20 +404,30 @@ static UIXPicklistPopoverResultBlock _selectionChangedBlock;
 
 
 @interface UIXPicklistPopover ()
+@property (nonatomic, assign) UIXPicklistPopoverControllerSelectionType selectcionType;
+@property (nonatomic, strong) NSArray* items;
+@property (nonatomic, copy) UIXPicklistPopoverResultBlock selectionBlock;
+@property (nonatomic, strong) UIPopoverController* pop;
 @end
 
 @implementation UIXPicklistPopover
-
+/////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////
 + (UIPopoverController *)sharedPopover
 {
     return _sharedPopover;
 }
 
-+ (void) picklistPopoverFromRect:(CGRect) rect
+/////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////
++ (UIXPicklistPopover*) picklistPopoverFromRect:(CGRect) rect
                    inView:(UIView*) view
                     items:(NSArray*) items
             selectedItems:(NSArray*) selectedItems
                    search:(BOOL) search
+                        userInfo: (NSDictionary*) userInfo
             selectionType:(UIXPicklistPopoverControllerSelectionType) selectionType
               onSelectionChanged:(UIXPicklistPopoverResultBlock) selectionChangedBlock;
 //                 onCancel:(VoidBlock) cancelBlock
@@ -396,6 +439,7 @@ static UIXPicklistPopoverResultBlock _selectionChangedBlock;
     tableController.search = search;
     tableController.selectionType = selectionType;
     tableController.valuesArray = items;
+    tableController.userInfo = userInfo;
     [tableController setSelectedItems:selectedItems];
     
     UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController: tableController];
@@ -403,5 +447,50 @@ static UIXPicklistPopoverResultBlock _selectionChangedBlock;
     [popover presentPopoverFromRect:rect inView:view.superview permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     
     _sharedPopover = popover;
+    
+    return _sharedPopover;
 }
+
+///////////////////////////////////////
+- (id) initWithSelectionType:(UIXPicklistPopoverControllerSelectionType) selectionType
+                                  items:(NSArray*) items
+                onSelectionChangedBlock:(UIXPicklistPopoverResultBlock) selectionChangedBlock
+{
+    if (self = [super init])
+    {
+        self.selectcionType = selectionType;
+        self.items = items;
+        self.selectionBlock = selectionChangedBlock;
+
+        self.selectedItems = nil;
+        self.showSearchBar = NO;
+        self.showAddItemWhenEmpty = NO;
+        self.emptyItemSelectBlock = nil;
+        self.permittedArrowDirections = UIPopoverArrowDirectionAny;
+        self.userInfo = nil;
+    }
+    
+    return self;
+}
+
+- (void) presentPicklistPopoverFromRect:(CGRect) rect inView:(UIView*) view
+{
+    UIXPicklistPopoverTableViewController* tableController = [[UIXPicklistPopoverTableViewController alloc] init];
+    tableController.search = self.showSearchBar;
+    tableController.selectionType = self.selectcionType;
+    tableController.valuesArray = self.items;
+    tableController.userInfo = self.userInfo;
+    [tableController setSelectedItems:self.selectedItems];
+    
+    self.pop = [[UIPopoverController alloc] initWithContentViewController: tableController];
+    self.pop.delegate = self;
+    [self.pop presentPopoverFromRect:rect inView:view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+    self.pop = nil;
+    //call dismissed block
+}
+
 @end

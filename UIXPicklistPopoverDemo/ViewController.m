@@ -13,6 +13,7 @@
 @interface ViewController ()
 @property (nonatomic, strong) UIPopoverController* pop;
 @property (nonatomic, strong) NSArray* values;
+@property (nonatomic, strong) UIXPicklistPopover* picklist;
 @end
 
 @implementation ViewController
@@ -52,10 +53,11 @@
                                        items:self.values
                                selectedItems:nil
                                       search:YES
+                                       userInfo:nil  
                                selectionType:UIXPicklistPopoverControllerSingleSelect
-                          onSelectionChanged:^(NSArray *selectedItems, NSArray *selectedItemIndexes) {
+                          onSelectionChanged:^(NSArray* selectedItems, NSArray* selectedItemIndexes, NSDictionary* userInfo) {
                               
-                              NSLog(@"%@ %@",selectedItems,selectedItemIndexes);
+                              //NSLog(@"%@ %@",selectedItems,selectedItemIndexes);
                               
                           }];
 }
@@ -67,11 +69,26 @@
                                        items:self.values
                                   selectedItems:[NSArray arrayWithObjects:@"Chicken wire",@"Duck Table",@"Pigeon Cable", nil]
                                       search:YES
+                                       userInfo:nil
                                selectionType:UIXPicklistPopoverControllerMultipleSelect
-                          onSelectionChanged:^(NSArray *selectedItems, NSArray *selectedItemIndexes) {
+                          onSelectionChanged:^(NSArray* selectedItems, NSArray* selectedItemIndexes, NSDictionary* userInfo) {
                               
-                              NSLog(@"%@ %@",selectedItems,selectedItemIndexes);
+                              //NSLog(@"%@ %@",selectedItems,selectedItemIndexes);
                               
                           }];
+}
+
+- (IBAction) newWayPressed:(UIButton*)sender
+{
+    self.picklist = [[UIXPicklistPopover alloc] initWithSelectionType:UIXPicklistPopoverControllerSingleSelect
+                                                                          items:self.values
+                                                        onSelectionChangedBlock:^(NSArray *selectedItems, NSArray *selectedItemIndexes, NSDictionary *userInfo) {
+                                                
+                                                        }];
+    
+    self.picklist.showSearchBar = YES;
+    
+    [self.picklist presentPicklistPopoverFromRect:sender.frame inView:self.view];
+    
 }
 @end
