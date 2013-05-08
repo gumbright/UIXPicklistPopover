@@ -390,46 +390,14 @@
 @property (nonatomic, assign) UIXPicklistPopoverControllerSelectionType selectcionType;
 @property (nonatomic, strong) NSArray* items;
 @property (nonatomic, copy) UIXPicklistPopoverResultBlock selectionBlock;
-@property (nonatomic, unsafe_unretained) UIPopoverController* pop;
+#if !(__has_feature(objc_arc))
+@property (nonatomic, retain) UIPopoverController* pop;
+#else
+@property (nonatomic, strong) UIPopoverController* pop;
+#endif
 @end
 
 @implementation UIXPicklistPopover
-/////////////////////////////////////////////////////
-//
-/////////////////////////////////////////////////////
-//+ (UIPopoverController *)sharedPopover
-//{
-//    return _sharedPopover;
-//}
-
-/////////////////////////////////////////////////////
-//
-/////////////////////////////////////////////////////
-//+ (UIXPicklistPopover*) picklistPopoverFromRect:(CGRect) rect
-//                   inView:(UIView*) view
-//                    items:(NSArray*) items
-//            selectedItems:(NSArray*) selectedItems
-//                   search:(BOOL) search
-//                        userInfo: (NSDictionary*) userInfo
-//            selectionType:(UIXPicklistPopoverControllerSelectionType) selectionType
-//              onSelectionChanged:(UIXPicklistPopoverResultBlock) selectionChangedBlock;
-////                 onCancel:(VoidBlock) cancelBlock
-//{
-//    UIXPicklistPopover* picklist = [[UIXPicklistPopover alloc] initWithSelectionType:selectionType
-//                                                                items:items
-//                                              onSelectionChangedBlock:[selectionChangedBlock copy]];
-//    
-//    picklist.showSearchBar = search;
-//    picklist.userInfo = userInfo;
-//    
-//    [picklist presentPicklistPopoverFromRect:rect inView:view];
-//    if (!__has_feature(objc_arc))
-//    {
-//        [picklist autorelease];
-//    }
-//
-//    return picklist;
-//}
 
 - (void) dealloc
 {
@@ -497,7 +465,10 @@
     {
         [self.pop dismissPopoverAnimated:YES];
         self.pop.delegate = nil;
+#if !(__has_feature(objc_arc))
+        [self.pop release];
         self.pop = nil;
+#endif
     }
 }
 
