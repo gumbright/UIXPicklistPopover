@@ -14,6 +14,7 @@
 @property (nonatomic, strong) UIPopoverController* pop;
 @property (nonatomic, strong) NSArray* values;
 @property (nonatomic, strong) UIXPicklistPopover* picklist;
+@property (nonatomic, strong) NSArray* datasourceModeData;
 @end
 
 @implementation ViewController
@@ -68,6 +69,7 @@
 
 - (IBAction) datasourceModePressed:(UIButton*)sender
 {
+    self.datasourceModeData = self.values;
     UIXPicklistPopover* picklist = [[UIXPicklistPopover alloc] initWithSelectionType:UIXPicklistPopoverControllerSingleSelect
                                                                                datasource:self
                                                              onSelectionChangedBlock:^(NSArray *selectedItems, NSArray *selectedItemIndexes, NSDictionary *userInfo) {
@@ -88,16 +90,29 @@
 
 - (NSUInteger) numberOfItems
 {
-    return self.values.count;
+    return self.datasourceModeData.count;
 }
 
 - (NSString*) itemAtIndex:(NSUInteger) index
 {
-    return self.values[index];
+    return self.datasourceModeData[index];
 }
 
 - (void) searchTermChanged:(NSString*) searchTerm
 {
+    if (searchTerm.length)
+    {
+        NSIndexSet* indexes = [self.values indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+            NSString* s = obj;
+            return ([s rangeOfString:searchTerm options:NSCaseInsensitiveSearch].location != NSNotFound);;
+        }];
+        
+        self.datasourceModeData = [self.values objectsAtIndexes:indexes];
+    }
+    else
+    {
+        self.datasourceModeData  = self.values;
+    }
     
 }
 

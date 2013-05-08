@@ -385,22 +385,29 @@
 /////////////////////////////////////////////////////
 - (void) searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
-    //!!!this can be better optimized by looking at the length change, etc
-    if (searchText.length)
+    if (self.tableDatasource != nil)
     {
-        NSIndexSet* indexes = [self.valuesArray indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
-            NSString* s = obj;
-            return ([s rangeOfString:searchText options:NSCaseInsensitiveSearch].location != NSNotFound);;
-        }];
-        
-        self.filteredValues = [self.valuesArray objectsAtIndexes:indexes];
-        
+        [self.tableDatasource searchTermChanged:searchText];
     }
     else
     {
-        self.filteredValues  = self.valuesArray;
+        //!!!this can be better optimized by looking at the length change, etc
+        if (searchText.length)
+        {
+            NSIndexSet* indexes = [self.valuesArray indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+                NSString* s = obj;
+                return ([s rangeOfString:searchText options:NSCaseInsensitiveSearch].location != NSNotFound);;
+            }];
+            
+            self.filteredValues = [self.valuesArray objectsAtIndexes:indexes];
+            
+        }
+        else
+        {
+            self.filteredValues  = self.valuesArray;
+        }
     }
-
+    
     [self.table reloadData];
 }
 @end
@@ -535,7 +542,7 @@
 
 - (void) searchTermChanged:(NSString*) searchString
 {
-    
+    [self.datasource searchTermChanged:searchString];
 }
 
 
