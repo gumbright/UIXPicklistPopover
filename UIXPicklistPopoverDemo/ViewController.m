@@ -46,49 +46,23 @@
 //    [self.pop presentPopoverFromRect:sender.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 //}
 
-- (IBAction) fancyPantsPressed:(UIButton*)sender
-{
-    self.picklist = [UIXPicklistPopover picklistPopoverFromRect:sender.frame
-                                      inView:self.view
-                                       items:self.values
-                               selectedItems:nil
-                                      search:YES
-                                       userInfo:nil  
-                               selectionType:UIXPicklistPopoverControllerSingleSelect
-                          onSelectionChanged:^(NSArray* selectedItems, NSArray* selectedItemIndexes, NSDictionary* userInfo) {
-                              
-                              NSLog(@"%@ %@",selectedItems,selectedItemIndexes);
-                              
-                          }];
-}
-
-- (IBAction) fancyPantsMultiPressed:(UIButton*)sender
-{
-    self.picklist = [UIXPicklistPopover picklistPopoverFromRect:sender.frame
-                                      inView:self.view
-                                       items:self.values
-                                  selectedItems:[NSArray arrayWithObjects:@"Chicken wire",@"Duck Table",@"Pigeon Cable", nil]
-                                      search:YES
-                                       userInfo:nil
-                               selectionType:UIXPicklistPopoverControllerMultipleSelect
-                          onSelectionChanged:^(NSArray* selectedItems, NSArray* selectedItemIndexes, NSDictionary* userInfo) {
-                              
-                              NSLog(@"%@ %@",selectedItems,selectedItemIndexes);
-                              
-                          }];
-}
-
 - (IBAction) newWayPressed:(UIButton*)sender
 {
-    self.picklist = [[UIXPicklistPopover alloc] initWithSelectionType:UIXPicklistPopoverControllerSingleSelect
+    UIXPicklistPopover* picklist = [[UIXPicklistPopover alloc] initWithSelectionType:UIXPicklistPopoverControllerSingleSelect
                                                                           items:self.values
                                                         onSelectionChangedBlock:^(NSArray *selectedItems, NSArray *selectedItemIndexes, NSDictionary *userInfo) {
-                                                
+//                                                            self.picklist = nil;
                                                         }];
     
-    self.picklist.showSearchBar = YES;
+    picklist.showSearchBar = YES;
+    picklist.userInfo = [NSDictionary dictionaryWithObject:@"blahblahblah" forKey:@"blabbing"];
     
-    [self.picklist presentPicklistPopoverFromRect:sender.frame inView:self.view];
+    [picklist presentPicklistPopoverFromRect:sender.frame inView:self.view];
+    
+#if !(__has_feature(objc_arc))
+        [picklist autorelease];
+#endif
+    self.picklist = picklist;
     
 }
 @end

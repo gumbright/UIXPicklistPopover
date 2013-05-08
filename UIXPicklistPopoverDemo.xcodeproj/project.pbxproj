@@ -277,6 +277,7 @@
 		E492807217373E5800189DCB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "UIXPicklistPopoverDemo/UIXPicklistPopoverDemo-Prefix.pch";
 				INFOPLIST_FILE = "UIXPicklistPopoverDemo/UIXPicklistPopoverDemo-Info.plist";
@@ -288,6 +289,7 @@
 		E492807317373E5800189DCB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "UIXPicklistPopoverDemo/UIXPicklistPopoverDemo-Prefix.pch";
 				INFOPLIST_FILE = "UIXPicklistPopoverDemo/UIXPicklistPopoverDemo-Info.plist";
@@ -315,6 +317,7 @@
 				E492807317373E5800189DCB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

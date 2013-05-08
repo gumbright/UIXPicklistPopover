@@ -19,14 +19,14 @@ typedef enum
 
 @interface UIXPicklistPopover : NSObject
 
-+ (UIXPicklistPopover*) picklistPopoverFromRect:(CGRect) rect
-                          inView:(UIView*) view
-                           items:(NSArray*) items
-                   selectedItems:(NSArray*) selectedItems
-                          search:(BOOL) search
-                        userInfo: (NSDictionary*) userInfo
-                   selectionType:(UIXPicklistPopoverControllerSelectionType) selectionType
-              onSelectionChanged:(UIXPicklistPopoverResultBlock) selectionChangedBlock;
+//+ (UIXPicklistPopover*) picklistPopoverFromRect:(CGRect) rect
+//                          inView:(UIView*) view
+//                           items:(NSArray*) items
+//                   selectedItems:(NSArray*) selectedItems
+//                          search:(BOOL) search
+//                        userInfo: (NSDictionary*) userInfo
+//                   selectionType:(UIXPicklistPopoverControllerSelectionType) selectionType
+//              onSelectionChanged:(UIXPicklistPopoverResultBlock) selectionChangedBlock;
 
 ////////////
 - (id) initWithSelectionType:(UIXPicklistPopoverControllerSelectionType) selectionType
@@ -35,9 +35,12 @@ typedef enum
 
 @property (nonatomic, copy) NSArray* selectedItems;
 @property (nonatomic, assign) BOOL showSearchBar;
+
 @property (nonatomic, assign) BOOL showAddItemWhenEmpty;
 @property (nonatomic, copy) VoidBlock emptyItemSelectBlock;
+
 @property (nonatomic, assign) NSInteger permittedArrowDirections;
+
 @property (nonatomic, strong) NSDictionary* userInfo;
 
 //- (void) setSelectedItems:(NSArray*) selectedItems;
