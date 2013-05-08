@@ -17,21 +17,23 @@ typedef enum
     UIXPicklistPopoverControllerMultipleSelect
 } UIXPicklistPopoverControllerSelectionType;
 
+@protocol UIXPicklistPopoverDatasource
+
+- (NSUInteger) numberOfItems;
+- (NSString*) itemAtIndex:(NSUInteger) index;
+- (void) searchTermChanged:(NSString*) searchTerm;
+
+@end
+
 @interface UIXPicklistPopover : NSObject
 
-//+ (UIXPicklistPopover*) picklistPopoverFromRect:(CGRect) rect
-//                          inView:(UIView*) view
-//                           items:(NSArray*) items
-//                   selectedItems:(NSArray*) selectedItems
-//                          search:(BOOL) search
-//                        userInfo: (NSDictionary*) userInfo
-//                   selectionType:(UIXPicklistPopoverControllerSelectionType) selectionType
-//              onSelectionChanged:(UIXPicklistPopoverResultBlock) selectionChangedBlock;
-
-////////////
 - (id) initWithSelectionType:(UIXPicklistPopoverControllerSelectionType) selectionType
-                                  items:(NSArray*) items
-                onSelectionChangedBlock:(UIXPicklistPopoverResultBlock) selectionChangedBlock;
+                       items:(NSArray*) items
+     onSelectionChangedBlock:(UIXPicklistPopoverResultBlock) selectionChangedBlock;
+
+- (id) initWithSelectionType:(UIXPicklistPopoverControllerSelectionType) selectionType
+                  datasource:(NSObject<UIXPicklistPopoverDatasource>*) datasource
+     onSelectionChangedBlock:(UIXPicklistPopoverResultBlock) selectionChangedBlock;
 
 @property (nonatomic, copy) NSArray* selectedItems;
 @property (nonatomic, assign) BOOL showSearchBar;
@@ -43,11 +45,8 @@ typedef enum
 
 @property (nonatomic, strong) NSDictionary* userInfo;
 
-//- (void) setSelectedItems:(NSArray*) selectedItems;
-//- (void) setShowSearchBar:(BOOL) showSearchBar;
-//- (void) setShowAddItemWhenEmpty: (BOOL) showAdditemWhenEmpty;
-//- (void) setEmptyItemSelectBlock: (VoidBlock) emptyItemSelectBlock;
-//- (void) setPermittedArrowDirections:(NSInteger) arrowDirections;
+//datasource mode
+@property (nonatomic, unsafe_unretained) NSObject<UIXPicklistPopoverDatasource>* datasource;
 
 - (void) presentPicklistPopoverFromRect:(CGRect) rect inView:(UIView*) view;
 

@@ -42,6 +42,12 @@
 
 @class UIXPicklistPopoverTableViewController;
 
+@protocol PicklistPopoverTableViewControllerDatasource 
+- (NSUInteger) numberOfItems;
+- (NSString*) itemAtIndex:(NSUInteger) index;
+- (void) searchTermChanged:(NSString*) searchString;
+@end
+
 @protocol PicklistPopoverTableViewControllerDelegate
 - (void) tableControllerCancelled:(UIXPicklistPopoverTableViewController*) tableController;
 - (void) tableControllerDidSelectItem:(UIXPicklistPopoverTableViewController*) tableController;
@@ -52,7 +58,7 @@
 @end
 
 #pragma mark UIXPicklistPopoverTableViewController Interface
-@interface UIXPicklistPopoverTableViewController : UIViewController <UISearchBarDelegate>
+@interface UIXPicklistPopoverTableViewController : UIViewController <UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate>
 
 @property (nonatomic, assign) BOOL search;
 @property (nonatomic, assign) BOOL toolbarButtons;
@@ -71,6 +77,7 @@
 @property (nonatomic, strong) NSArray* filteredValues;
 
 @property (nonatomic, copy) UIXPicklistPopoverResultBlock selectionChangedBlock;
+@property (nonatomic, unsafe_unretained) NSObject<PicklistPopoverTableViewControllerDatasource>* tableDatasource;
 
 - (void) setSelectedItems:(NSArray *)selectedItems;
 - (NSArray*) getSelectedItems;
@@ -92,6 +99,7 @@
         self.toolbarButtons = NO;
         self.selectionType = UIXPicklistPopoverControllerSingleSelect;
         self.selectedValues = [NSMutableSet set];
+        self.tableDatasource = nil;
     }
     return self;
 }
@@ -206,7 +214,14 @@
 /////////////////////////////////////////////////////
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.filteredValues.count;
+    if (self.tableDatasource != nil)
+    {
+        return [self.tableDatasource numberOfItems];
+    }
+    else
+    {
+        return self.filteredValues.count;
+    }
 }
 
 /////////////////////////////////////////////////////
@@ -225,8 +240,17 @@
 #endif
     }
     
- 	cell.textLabel.text = [self.filteredValues objectAtIndex:[indexPath row]];
+    NSString* itemText;
+    if (self.tableDatasource != nil)
+    {
+        itemText = [self.tableDatasource itemAtIndex:indexPath.row];
+    }
+    else
+    {
+        itemText = [self.filteredValues objectAtIndex:indexPath.row];
+    }
     
+ 	cell.textLabel.text = itemText;
     if ([self.selectedValues containsObject:[self.filteredValues objectAtIndex:[indexPath row]]])
     {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -387,7 +411,7 @@
 
 @interface UIXPicklistPopover () <UIPopoverControllerDelegate>
 
-@property (nonatomic, assign) UIXPicklistPopoverControllerSelectionType selectcionType;
+@property (nonatomic, assign) UIXPicklistPopoverControllerSelectionType selectionType;
 @property (nonatomic, strong) NSArray* items;
 @property (nonatomic, copy) UIXPicklistPopoverResultBlock selectionBlock;
 #if !(__has_feature(objc_arc))
@@ -410,6 +434,16 @@
 #endif
 }
 
+- (void) commonInit
+{
+    self.selectedItems = nil;
+    self.showSearchBar = NO;
+    self.showAddItemWhenEmpty = NO;
+    self.emptyItemSelectBlock = nil;
+    self.permittedArrowDirections = UIPopoverArrowDirectionAny;
+    self.userInfo = nil;
+}
+
 ///////////////////////////////////////
 - (id) initWithSelectionType:(UIXPicklistPopoverControllerSelectionType) selectionType
                                   items:(NSArray*) items
@@ -417,16 +451,25 @@
 {
     if (self = [super init])
     {
-        self.selectcionType = selectionType;
+        [self commonInit];
+        self.selectionType = selectionType;
         self.items = items;
         self.selectionBlock = selectionChangedBlock;
+    }
+    
+    return self;
+}
 
-        self.selectedItems = nil;
-        self.showSearchBar = NO;
-        self.showAddItemWhenEmpty = NO;
-        self.emptyItemSelectBlock = nil;
-        self.permittedArrowDirections = UIPopoverArrowDirectionAny;
-        self.userInfo = nil;
+- (id) initWithSelectionType:(UIXPicklistPopoverControllerSelectionType) selectionType
+                  datasource:(NSObject<UIXPicklistPopoverDatasource>*) datasource
+     onSelectionChangedBlock:(UIXPicklistPopoverResultBlock) selectionChangedBlock
+{
+    if (self = [super init])
+    {        
+        [self commonInit];
+        self.selectionType = selectionType;
+        self.datasource = datasource;
+        self.selectionBlock = selectionChangedBlock;
     }
     
     return self;
@@ -436,13 +479,21 @@
 {
     UIXPicklistPopoverTableViewController* tableController = [[UIXPicklistPopoverTableViewController alloc] init];
     tableController.search = self.showSearchBar;
-    tableController.selectionType = self.selectcionType;
-    tableController.valuesArray = self.items;
+    tableController.selectionType = self.selectionType;
     tableController.userInfo = self.userInfo;
     tableController.selectionChangedBlock = self.selectionBlock;
     [tableController setSelectedItems:self.selectedItems];
     tableController.picklistTableDelegate = self;
 
+    if (self.datasource)
+    {
+        tableController.tableDatasource = self;
+    }
+    else
+    {
+        tableController.valuesArray = self.items;
+    }
+    
     self.pop = [[UIPopoverController alloc] initWithContentViewController: tableController];
 #if !(__has_feature(objc_arc))
         [tableController autorelease];
@@ -471,5 +522,21 @@
 #endif
     }
 }
+
+- (NSUInteger) numberOfItems
+{
+    return [self.datasource numberOfItems];
+}
+
+- (NSString*) itemAtIndex:(NSUInteger) index
+{
+    return [self.datasource itemAtIndex:index];
+}
+
+- (void) searchTermChanged:(NSString*) searchString
+{
+    
+}
+
 
 @end

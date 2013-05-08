@@ -65,4 +65,40 @@
     self.picklist = picklist;
     
 }
+
+- (IBAction) datasourceModePressed:(UIButton*)sender
+{
+    UIXPicklistPopover* picklist = [[UIXPicklistPopover alloc] initWithSelectionType:UIXPicklistPopoverControllerSingleSelect
+                                                                               datasource:self
+                                                             onSelectionChangedBlock:^(NSArray *selectedItems, NSArray *selectedItemIndexes, NSDictionary *userInfo) {
+                                                                 //                                                            self.picklist = nil;
+                                                             }];
+    
+    picklist.showSearchBar = YES;
+    picklist.userInfo = [NSDictionary dictionaryWithObject:@"blahblahblah" forKey:@"blabbing"];
+    
+    [picklist presentPicklistPopoverFromRect:sender.frame inView:self.view];
+    
+#if !(__has_feature(objc_arc))
+    [picklist autorelease];
+#endif
+    self.picklist = picklist;
+    
+}
+
+- (NSUInteger) numberOfItems
+{
+    return self.values.count;
+}
+
+- (NSString*) itemAtIndex:(NSUInteger) index
+{
+    return self.values[index];
+}
+
+- (void) searchTermChanged:(NSString*) searchTerm
+{
+    
+}
+
 @end
