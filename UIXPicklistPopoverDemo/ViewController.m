@@ -58,6 +58,18 @@
     picklist.showSearchBar = YES;
     picklist.userInfo = [NSDictionary dictionaryWithObject:@"blahblahblah" forKey:@"blabbing"];
     
+    UIButton* button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    button.frame = CGRectMake(0, 0, 320, 50);
+    [button setTitle:@"Create New" forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(accessoryPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
+    picklist.accessoryViewPosition = UIXPicklistPopoverAccessoryViewBottom;
+    picklist.accessoryView = button;
+
+#if !(__has_feature(objc_arc))
+    [button release];
+#endif
+    
     [picklist presentPicklistPopoverFromRect:sender.frame inView:self.view];
     
 #if !(__has_feature(objc_arc))
@@ -65,6 +77,12 @@
 #endif
     self.picklist = picklist;
     
+}
+
+- (IBAction) accessoryPressed:(id)sender
+{
+    NSLog(@"accessoryPressed");
+    [self.picklist dismissPicklistPopoverAnimated:YES];
 }
 
 - (IBAction) datasourceModePressed:(UIButton*)sender

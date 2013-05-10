@@ -79,6 +79,9 @@
 @property (nonatomic, copy) UIXPicklistPopoverResultBlock selectionChangedBlock;
 @property (nonatomic, unsafe_unretained) NSObject<PicklistPopoverTableViewControllerDatasource>* tableDatasource;
 
+@property (nonatomic, strong) UIView* accessoryView;
+@property (nonatomic, assign) UIXPicklistPopoverAccessoryViewPosition accessoryViewPosition;
+
 - (void) setSelectedItems:(NSArray *)selectedItems;
 - (NSArray*) getSelectedItems;
 - (NSArray*) getSelectedItemIndexes;
@@ -100,6 +103,7 @@
         self.selectionType = UIXPicklistPopoverControllerSingleSelect;
         self.selectedValues = [NSMutableSet set];
         self.tableDatasource = nil;
+        self.accessoryViewPosition = UIXPicklistPopoverAccessoryViewTop;
     }
     return self;
 }
@@ -112,6 +116,7 @@
     self.selectedValues = nil;
     self.filteredValues = nil;
     self.selectionChangedBlock = nil;
+    self.accessoryView = nil;
 //    self.myPopoverController = nil;
     
 #if !(__has_feature(objc_arc))
@@ -167,12 +172,47 @@
         currentY = CGRectGetMaxY(self.searchBar.frame);
     }
     
-    UITableView* table = [[UITableView alloc] initWithFrame:CGRectMake(0, currentY, self.contentWidth, v.bounds.size.height - CGRectGetMaxY(self.searchBar.frame))
+    CGFloat preTableHeight=0, postTableHeight=0;
+    if (self.accessoryView != nil)
+    {
+        CGRect accessoryFrame = self.accessoryView.frame;
+        switch (self.accessoryViewPosition)
+        {
+            case UIXPicklistPopoverAccessoryViewTop:
+            {
+                preTableHeight = self.accessoryView.bounds.size.height;
+                accessoryFrame.origin.y = currentY;
+            }
+                break;
+                
+            case UIXPicklistPopoverAccessoryViewBottom:
+            {
+                postTableHeight = self.accessoryView.bounds.size.height;
+                accessoryFrame.origin.y = v.bounds.size.height - postTableHeight;
+                self.accessoryView.autoresizingMask =  UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+            }
+                break;
+        }
+        
+        accessoryFrame.origin.x = 0;
+        accessoryFrame.size.width = v.bounds.size.width;
+        
+        self.accessoryView.frame = accessoryFrame;
+        
+       [v addSubview:self.accessoryView];
+        
+        currentY += preTableHeight;
+    }
+    
+    CGRect tableRect = CGRectMake(0, currentY, self.contentWidth, v.bounds.size.height - (CGRectGetMaxY(self.searchBar.frame) + preTableHeight + postTableHeight));
+    
+    UITableView* table = [[UITableView alloc] initWithFrame:tableRect
                                               style:UITableViewStylePlain];
     table.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     table.dataSource = self;
     table.delegate = self;
     [v addSubview:table];
+
     self.table = table;
 #if !(__has_feature(objc_arc))
         [table release];
@@ -448,6 +488,7 @@
     self.showAddItemWhenEmpty = NO;
     self.emptyItemSelectBlock = nil;
     self.permittedArrowDirections = UIPopoverArrowDirectionAny;
+    self.accessoryViewPosition = UIXPicklistPopoverAccessoryViewTop;
     self.userInfo = nil;
 }
 
@@ -491,6 +532,11 @@
     tableController.selectionChangedBlock = self.selectionBlock;
     [tableController setSelectedItems:self.selectedItems];
     tableController.picklistTableDelegate = self;
+    if (self.accessoryView != nil)
+    {
+        tableController.accessoryView = self.accessoryView;
+        tableController.accessoryViewPosition = self.accessoryViewPosition;
+    }
 
     if (self.datasource)
     {
@@ -528,6 +574,12 @@
         self.pop = nil;
 #endif
     }
+}
+
+- (id) dismissPicklistPopoverAnimated:(BOOL) animated
+{
+    [self.pop dismissPopoverAnimated:animated];
+    self.pop = nil;
 }
 
 - (NSUInteger) numberOfItems

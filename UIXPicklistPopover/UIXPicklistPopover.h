@@ -17,6 +17,12 @@ typedef enum
     UIXPicklistPopoverControllerMultipleSelect
 } UIXPicklistPopoverControllerSelectionType;
 
+typedef enum
+{
+    UIXPicklistPopoverAccessoryViewTop=0,
+    UIXPicklistPopoverAccessoryViewBottom
+} UIXPicklistPopoverAccessoryViewPosition;
+
 @protocol UIXPicklistPopoverDatasource
 
 - (NSUInteger) numberOfItems;
@@ -35,6 +41,8 @@ typedef enum
                   datasource:(NSObject<UIXPicklistPopoverDatasource>*) datasource
      onSelectionChangedBlock:(UIXPicklistPopoverResultBlock) selectionChangedBlock;
 
+- (id) dismissPicklistPopoverAnimated:(BOOL) animated;
+
 @property (nonatomic, copy) NSArray* selectedItems;
 @property (nonatomic, assign) BOOL showSearchBar;
 
@@ -44,6 +52,9 @@ typedef enum
 @property (nonatomic, assign) NSInteger permittedArrowDirections;
 
 @property (nonatomic, strong) NSDictionary* userInfo;
+
+@property (nonatomic, strong) UIView* accessoryView;
+@property (nonatomic, assign) UIXPicklistPopoverAccessoryViewPosition accessoryViewPosition;
 
 //datasource mode
 @property (nonatomic, unsafe_unretained) NSObject<UIXPicklistPopoverDatasource>* datasource;
