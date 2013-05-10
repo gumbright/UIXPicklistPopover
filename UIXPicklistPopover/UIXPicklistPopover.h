@@ -41,7 +41,7 @@ typedef enum
                   datasource:(NSObject<UIXPicklistPopoverDatasource>*) datasource
      onSelectionChangedBlock:(UIXPicklistPopoverResultBlock) selectionChangedBlock;
 
-- (id) dismissPicklistPopoverAnimated:(BOOL) animated;
+- (void) dismissPicklistPopoverAnimated:(BOOL) animated;
 
 @property (nonatomic, copy) NSArray* selectedItems;
 @property (nonatomic, assign) BOOL showSearchBar;

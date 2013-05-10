@@ -82,6 +82,8 @@
 @property (nonatomic, strong) UIView* accessoryView;
 @property (nonatomic, assign) UIXPicklistPopoverAccessoryViewPosition accessoryViewPosition;
 
+@property (nonatomic, strong) NSMutableSet* selectedIndicies;
+
 - (void) setSelectedItems:(NSArray *)selectedItems;
 - (NSArray*) getSelectedItems;
 - (NSArray*) getSelectedItemIndexes;
@@ -104,6 +106,7 @@
         self.selectedValues = [NSMutableSet set];
         self.tableDatasource = nil;
         self.accessoryViewPosition = UIXPicklistPopoverAccessoryViewTop;
+        self.selectedIndicies = [NSMutableSet set];
     }
     return self;
 }
@@ -294,10 +297,12 @@
     if ([self.selectedValues containsObject:[self.filteredValues objectAtIndex:[indexPath row]]])
     {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        [self.selectedIndicies addObject:indexPath];
     }
     else
     {
         cell.accessoryType = UITableViewCellAccessoryNone;
+        [self.selectedIndicies removeObject:indexPath];
     }
     
     return cell;
@@ -319,11 +324,13 @@
         {
             [self.selectedValues addObject:value];
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            [self.selectedIndicies addObject:indexPath];
         }
         else
         {
             [self.selectedValues removeObject:value];
             cell.accessoryType = UITableViewCellAccessoryNone;
+            [self.selectedIndicies removeObject:indexPath];
         }
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         [self handleSelect];
@@ -331,19 +338,20 @@
     }
     else
     {
-        if (self.selectedValues.count > 0)
+        if (self.selectedIndicies.count > 0)
         {
-            NSInteger ndx = [self.valuesArray indexOfObject:[self.selectedValues anyObject]];
-            NSIndexPath* path = [NSIndexPath indexPathForRow:ndx inSection:0];
+            NSIndexPath* path = [self.selectedIndicies anyObject];
             [tableView cellForRowAtIndexPath:path].accessoryType = UITableViewCellAccessoryNone;
         }
         
         [tableView cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryCheckmark;
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        [self.selectedIndicies addObject:indexPath];
         /*
          * Update selected label.
          */
-        [self setSelectedLabel:[self.filteredValues objectAtIndex:[indexPath row]]];
+        UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
+        [self setSelectedLabel:cell.textLabel.text];
         [self handleSelect];
         [self.picklistTableDelegate tableControllerDidSelectItem:self];
     }
@@ -411,12 +419,15 @@
 {
     NSMutableArray* indexes = [NSMutableArray arrayWithCapacity:self.selectedValues.count];
     
-    for (NSString* s in self.selectedValues.allObjects)
+    //indexes only generated for non datasource mode (at least for now)
+    if (self.tableDatasource == nil)
     {
-        NSInteger ndx = [self.valuesArray indexOfObject:s];
-        [indexes addObject:[NSNumber numberWithInteger:ndx]];
+        for (NSString* s in self.selectedValues.allObjects)
+        {
+            NSInteger ndx = [self.valuesArray indexOfObject:s];
+            [indexes addObject:[NSNumber numberWithInteger:ndx]];
+        }
     }
-    
     return indexes;
 }
 
@@ -576,7 +587,7 @@
     }
 }
 
-- (id) dismissPicklistPopoverAnimated:(BOOL) animated
+- (void) dismissPicklistPopoverAnimated:(BOOL) animated
 {
     [self.pop dismissPopoverAnimated:animated];
     self.pop = nil;
